@@ -4,12 +4,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ClassA {
+public class ProcessBuilderClass {
 
     public static final String DIRECTORY_PATH = "./target/classes";
     public static final int NUM_PROCESS = 7;
 
-    public ClassA() {
+    public ProcessBuilderClass() {
     }
 
 
@@ -20,7 +20,7 @@ public class ClassA {
     }
 
     public static void runProcess(int num) {
-        ProcessBuilder pb = new ProcessBuilder("java", "main.es.ies.puerto.model.ClassB", String.valueOf(num));
+        ProcessBuilder pb = new ProcessBuilder("java", "es.ies.puerto.model.FileWriterClass", String.valueOf(num));
         pb.directory(new java.io.File(DIRECTORY_PATH));
 
         try {

@@ -2,14 +2,13 @@ package main.es.ies.puerto.model;
 
 import java.io.*;
 
-public class ClassB {
+public class FileWriterClass {
     public static final String PATH = "src/main/resources/file.txt";
 
     /**
      * Default constructor of the class
      */
-    public ClassB() {
-    }
+    public FileWriterClass() {}
 
     public static void main(String[] args) throws IOException {
         String processMessage = "Process line (" + args[0] + ")\n";
