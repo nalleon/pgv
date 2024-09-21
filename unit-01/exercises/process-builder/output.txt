@@ -1,0 +1,17 @@
+ El volumen de la unidad C es Acer
+ El n£mero de serie del volumen es: 5A9B-840F
+
+ Directorio de C:\Users\nabil\repositorios-git\pgv\unit-01\exercises\process-builder
+
+21/09/2024  14:51    <DIR>          .
+21/09/2024  14:51    <DIR>          ..
+21/09/2024  14:51    <DIR>          .idea
+21/09/2024  13:11    <DIR>          .vscode
+21/09/2024  14:51                12 exercise04.txt
+21/09/2024  14:51                 0 output.txt
+21/09/2024  14:51             1.532 pom.xml
+21/09/2024  14:51               165 README.md
+21/09/2024  13:11    <DIR>          src
+21/09/2024  14:17    <DIR>          target
+               4 archivos          1.709 bytes
+               6 dirs  420.256.567.296 bytes libres

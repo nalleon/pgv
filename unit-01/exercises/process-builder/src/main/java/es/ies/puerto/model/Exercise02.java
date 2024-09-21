@@ -1,4 +1,4 @@
-package es.ies.puerto;
+package es.ies.puerto.model;
 
 import java.io.IOException;
 
