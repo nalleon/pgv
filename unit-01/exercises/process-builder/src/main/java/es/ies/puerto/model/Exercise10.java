@@ -1,5 +1,7 @@
 package es.ies.puerto.model;
 
+import java.io.IOException;
+
 /**
  * Escribe un programa que encadene la salida de un proceso como entrada de otro.
  * Por ejemplo, usa el comando ls (o dir) y pasa su salida a un comando grep (o find)
@@ -10,7 +12,20 @@ package es.ies.puerto.model;
  */
 public class Exercise10 {
 
-    public static void main(String[] args) {
+    public static final String COMMAND_LINUX = "ls -l";
+    public static final String COMMAND_FILTER = "&& grep";
 
+    public static void main(String[] args) {
+        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
+
+        try{
+            Process process = processBuilder.start();
+
+            int exitCode = process.waitFor();
+            System.out.println("exitCode: " + exitCode);
+
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

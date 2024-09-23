@@ -12,12 +12,12 @@ import java.io.IOException;
  *     bajo una condición.
  */
 public class Exercise09 {
-    public static final String COMMAND_LINUX = "ls -l";
+    public static final String COMMAND_LINUX = "ping -t google.com";
     public static final String COMMAND_WINDOWS= "cmd.exe /c ping -t google.com";
     public static final int MAX_TIME = 10000;
 
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_WINDOWS.split(" "));
+        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
 
         try{
             long startTime = System.currentTimeMillis();

@@ -12,7 +12,9 @@ import java.io.InputStreamReader;
  *     Usar redirectErrorStream() o getErrorStream() para manejar errores.
  */
 public class Exercise05 {
-    public static final String COMMAND = "cmd.exe /c dir /ff";
+
+    public static final String COMMAND = "ls -ff";
+    public static final String COMMAND_WINDOWS = "cmd.exe /c dir /ff";
     public static void main(String[] args) {
         ProcessBuilder processBuilder = new ProcessBuilder(COMMAND.split(" "));
         processBuilder.redirectErrorStream(true);

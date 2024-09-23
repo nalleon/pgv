@@ -7,13 +7,12 @@ import java.io.*;
  * capture su salida y la redirija a un archivo de texto.
  */
 public class Exercise03 {
-
-    //public static final String COMMAND_LINUX = "ls -l";
-    public static final String COMMAND_WINDOWS = "cmd.exe /c dir";
+    public static final String COMMAND_LINUX = "ls -l";
+    //public static final String COMMAND_WINDOWS = "cmd.exe /c dir";
 
 
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_WINDOWS.split(" "));
+        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
 
         File outputFile = new File("output.txt");
 
