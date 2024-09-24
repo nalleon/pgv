@@ -3,6 +3,8 @@ package es.ies.puerto.model;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Escribe un programa que ejecute un comando que tenga una alta probabilidad de fallar
@@ -14,9 +16,13 @@ import java.io.InputStreamReader;
 public class Exercise05 {
 
     public static final String COMMAND = "ls -ff";
-    public static final String COMMAND_WINDOWS = "cmd.exe /c dir /ff";
+
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND.split(" "));
+        System.out.println(redirectErrors(COMMAND));
+    }
+
+    public static boolean redirectErrors(String command){
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
         processBuilder.redirectErrorStream(true);
 
         try {
@@ -24,17 +30,19 @@ public class Exercise05 {
             BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String lineError;
 
-
-            System.err.println("Command error output: ");
+            List<String> errorList = new ArrayList<>();
             while ((lineError = br.readLine()) != null) {
-                System.out.println(lineError);
+                errorList.add(lineError);
             }
 
             int exitCode = process.waitFor();
-            System.err.println("exitCode: " + exitCode);
+            if (exitCode == 1 && !errorList.isEmpty()){
+                return true;
+            }
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return false;
     }
 }

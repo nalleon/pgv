@@ -11,10 +11,10 @@ import java.io.IOException;
  */
 public class Exercise08 {
     public static final String COMMAND_LINUX = "ls -l";
-    public static final String COMMAND_WINDOWS= "cmd.exe /c dir";
+    //public static final String COMMAND_WINDOWS= "cmd.exe /c dir";
 
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_WINDOWS.split(" "));
+        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
 
         try{
             long startTime = System.currentTimeMillis();

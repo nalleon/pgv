@@ -1,50 +1,46 @@
 package es.ies.puerto.model;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Escribe un programa que inicie dos procesos: uno que genere datos y otro que los consuma. Usa un canal
- * de entrada/salida para enviar datos desde un proceso a otro.
- * Objetivos:
- *     Enviar datos desde un proceso a otro.
- *     Usar getOutputStream() y getInputStream() para manejar la comunicación entre procesos.
- *     usar BufferedReader(new InputStreamReader(proceso.getInputStream())
- */
 public class Exercise07 {
     public static final String EXECUTABLE = "java";
-    public static final String CLASS_PRODUCER = "es.ies.puerto.model.DataProducer";
-    public static final String CLASS_CONSUMER = "es.ies.puerto.model.DataConsumer";
+    public static final String CLASS_PRODUCER = "src/main/java/es/ies/puerto/model/DataProducer.java";
+    public static final String CLASS_CONSUMER = "src/main/java/es/ies/puerto/model/DataConsumer.java";
+    public static final String CLASSPATH = "-cp";  // Agrega el parámetro de classpath
+    public static final String CLASSPATH_DIR = "bin";
 
     public static void main(String[] args) {
-        ProcessBuilder pbProducer = new ProcessBuilder(EXECUTABLE, CLASS_PRODUCER);
-        ProcessBuilder pbConsumer = new ProcessBuilder(EXECUTABLE, CLASS_CONSUMER);
+        ProcessBuilder pbProducer = new ProcessBuilder(EXECUTABLE, CLASSPATH, CLASSPATH_DIR, CLASS_PRODUCER);
+        ProcessBuilder pbConsumer = new ProcessBuilder(EXECUTABLE, CLASSPATH, CLASSPATH_DIR, CLASS_CONSUMER);
 
         pbProducer.redirectErrorStream(true);
         pbConsumer.redirectErrorStream(true);
 
-        try{
+        try {
             Process processProducer = pbProducer.start();
             Process processConsumer = pbConsumer.start();
 
             InputStream producerInputStream = processProducer.getInputStream();
-            OutputStream producerOutputStream = processProducer.getOutputStream();
-
-            InputStream consumerInputStream = processProducer.getInputStream();
             OutputStream consumerOutputStream = processConsumer.getOutputStream();
 
+            byte[] tmp = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = producerInputStream.read(tmp)) != -1) {
+                consumerOutputStream.write(tmp, 0, bytesRead);
+                consumerOutputStream.flush();
+            }
 
-            int exitCodeConsumer = processConsumer.waitFor();
+            producerInputStream.close();
+            consumerOutputStream.close();
+
             int exitCodeProducer = processProducer.waitFor();
+            int exitCodeConsumer = processConsumer.waitFor();
 
-            System.out.println("exitCode Consumer: " + exitCodeConsumer);
-            System.out.println("exitCode Producer: " + exitCodeProducer);
+            System.out.println("Código de salida del Productor: " + exitCodeProducer);
+            System.out.println("Código de salida del Consumidor: " + exitCodeConsumer);
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-
-
     }
 }

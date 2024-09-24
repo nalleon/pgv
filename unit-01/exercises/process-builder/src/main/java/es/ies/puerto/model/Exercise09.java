@@ -13,7 +13,7 @@ import java.io.IOException;
  */
 public class Exercise09 {
     public static final String COMMAND_LINUX = "ping -t google.com";
-    public static final String COMMAND_WINDOWS= "cmd.exe /c ping -t google.com";
+    //public static final String COMMAND_WINDOWS= "cmd.exe /c ping -t google.com";
     public static final int MAX_TIME = 10000;
 
     public static void main(String[] args) {

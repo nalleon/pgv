@@ -1,6 +1,6 @@
 package es.ies.puerto.model;
 
-import java.io.IOException;
+import java.io.*;
 
 /**
  * Escribe un programa que encadene la salida de un proceso como entrada de otro.
@@ -13,19 +13,41 @@ import java.io.IOException;
 public class Exercise10 {
 
     public static final String COMMAND_LINUX = "ls -l";
-    public static final String COMMAND_FILTER = "&& grep";
-
+    public static final String COMMAND_FILTER = "grep \".txt\"";
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
+        ProcessBuilder pbProducer = new ProcessBuilder(COMMAND_LINUX.split(" "));
+        ProcessBuilder pbConsumer = new ProcessBuilder(COMMAND_FILTER.split(" "));
 
-        try{
-            Process process = processBuilder.start();
+        try {
+            Process processProducer = pbProducer.start();
+            Process processConsumer = pbConsumer.start();
 
-            int exitCode = process.waitFor();
-            System.out.println("exitCode: " + exitCode);
+
+            InputStream producerInputStream = processProducer.getInputStream();
+            OutputStream consumerOutputStream = processConsumer.getOutputStream();
+
+
+            byte[] tmp = new byte[1024];
+            int bytesRead;
+
+            while ((bytesRead = producerInputStream.read(tmp)) != -1) {
+                consumerOutputStream.write(tmp, 0, bytesRead);
+                consumerOutputStream.flush();
+            }
+
+
+            consumerOutputStream.close();
+            producerInputStream.close();
+
+
+            int exitCodeProducer = processProducer.waitFor();
+            int exitCodeConsumer = processConsumer.waitFor();
+
+            System.out.println("Código de salida del Productor: " + exitCodeProducer);
+            System.out.println("Código de salida del Consumidor: " + exitCodeConsumer);
 
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

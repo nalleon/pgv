@@ -3,4 +3,4 @@ Hello from WorkerClass 2!
 Hello from WorkerClass 3!
 Hello from WorkerClass 4!
 Hello from WorkerClass 5!
-Hello from WorkerClass exercise04.txt!
+Hello from WorkerClass 1!

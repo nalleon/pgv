@@ -13,23 +13,31 @@ public class Exercise06 {
     public static final String EXECUTABLE = "java";
     public static final String CLASS = "es.ies.puerto.model.WorkerClass";
     public static final int NUM_PROCESS = 5;
-
+    public static final String CLASS_PATH = System.getProperty("java.class.path");
     public static void main(String[] args) {
-        String classPath = System.getProperty("java.class.path");
+        System.out.println(runInstances(NUM_PROCESS,EXECUTABLE,CLASS_PATH,CLASS));
+    }
 
-        for (int i=1; i <= NUM_PROCESS; i++) {
+
+    public static boolean runInstances(int numInstances, String executable, String classPath, String className){
+        for (int i=1; i <= numInstances; i++) {
             try {
-                ProcessBuilder processBuilder = new ProcessBuilder(EXECUTABLE, "-cp", classPath,
-                        CLASS, String.valueOf(i));
-
+                ProcessBuilder processBuilder = new ProcessBuilder(executable, "-cp", classPath, className,
+                        String.valueOf(i));
+//String.valueOf(i)
                 Process process = processBuilder.start();
 
                 int exitCode = process.waitFor();
-                System.out.println("exitCode of process " + (i)+ " : " + exitCode);
+
+                if (exitCode == 0){
+                    return true;
+                }
 
             } catch (IOException | InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
+
+        return false;
     }
 }

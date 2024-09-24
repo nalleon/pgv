@@ -8,13 +8,15 @@ import java.io.*;
  */
 public class Exercise03 {
     public static final String COMMAND_LINUX = "ls -l";
-    //public static final String COMMAND_WINDOWS = "cmd.exe /c dir";
-
 
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
+        System.out.println(redirectToFile(COMMAND_LINUX));
+    }
 
-        File outputFile = new File("output.txt");
+    public static boolean redirectToFile(String command){
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
+
+        File outputFile = new File("exercise3.txt");
 
         processBuilder.redirectOutput(outputFile);
         processBuilder.redirectErrorStream(true);
@@ -23,10 +25,13 @@ public class Exercise03 {
             Process process = processBuilder.start();
 
             int exitCode = process.waitFor();
-            System.out.println("exitCode: " + exitCode);
+            if (exitCode == 0){
+                return true;
+            }
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return false;
     }
 
 

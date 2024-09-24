@@ -8,17 +8,33 @@ import java.io.IOException;
  * proceso en la consola.
  */
 public class Exercise01 {
+
     public static final String COMMAND = "ping -c 3 google.com";
 
-    public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND.split(" "));
+    /**
+     * Default cosntructor of the class
+     */
+    public Exercise01() {}
 
+
+    public static void main(String[] args) {
+        processPing(COMMAND);
+    }
+
+
+    public static boolean processPing(String command){
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
         try{
             Process process = processBuilder.start();
             int exitCode = process.waitFor();
-            System.out.println("exitCode: " + exitCode);
+
+            if (exitCode == 0){
+                return true;
+            }
+
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+             return false;
         }
+        return false;
     }
 }
