@@ -10,6 +10,7 @@ import java.util.List;
  * Objetivos:
  *     Enviar datos desde un proceso a otro.
  *     Usar getOutputStream() y getInputStream() para manejar la comunicación entre procesos.
+ *     usar BufferedReader(new InputStreamReader(proceso.getInputStream())
  */
 public class Exercise07 {
     public static final String EXECUTABLE = "java";
@@ -27,7 +28,12 @@ public class Exercise07 {
             Process processProducer = pbProducer.start();
             Process processConsumer = pbConsumer.start();
 
-            processProducer.getInputStream();
+            InputStream producerInputStream = processProducer.getInputStream();
+            OutputStream producerOutputStream = processProducer.getOutputStream();
+
+            InputStream consumerInputStream = processProducer.getInputStream();
+            OutputStream consumerOutputStream = processConsumer.getOutputStream();
+
 
             int exitCodeConsumer = processConsumer.waitFor();
             int exitCodeProducer = processProducer.waitFor();
