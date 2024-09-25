@@ -19,36 +19,40 @@ public class Exercise10 {
     }
 
     public static boolean consumerReadProducer(String commandProducer, String commandConsumer) {
+        //Process processConsumer = pbConsumer.start();
+
         ProcessBuilder pbProducer = new ProcessBuilder(commandProducer.split(" "));
         ProcessBuilder pbConsumer = new ProcessBuilder(commandConsumer.split(" "));
-
         try {
             Process processProducer = pbProducer.start();
-            Process processConsumer = pbConsumer.start();
 
-            try (InputStream producerInputStream = processProducer.getInputStream();
-                 OutputStream consumerOutputStream = processConsumer.getOutputStream()){
-                byte[] tmp = new byte[1024];
-                int bytesRead;
+            InputStream producerInputStream = processProducer.getInputStream();
+            BufferedReader lector = new BufferedReader(new InputStreamReader(producerInputStream));
 
-                while ((bytesRead = producerInputStream.read(tmp)) != -1) {
-                    consumerOutputStream.write(tmp, 0, bytesRead);
-                    consumerOutputStream.flush();
-                }
+            String linea;
+            System.out.println("Salida del proceso:");
+            while ((linea = lector.readLine()) != null) {
+                System.out.println(linea);
             }
 
+            } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
 
 
-            int exitCodeProducer = processProducer.waitFor();
+       /**int exitCodeProducer = processProducer.waitFor();
+        Process processConsumer = pbConsumer.start();
+
+
+
+        OutputStream outputStream = processConsumer.getOutputStream();
+
             int exitCodeConsumer = processConsumer.waitFor();
 
             if (exitCodeConsumer == 0 && exitCodeProducer == 0){
                 return true;
             }
-
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+*/
         return false;
     }
 }
