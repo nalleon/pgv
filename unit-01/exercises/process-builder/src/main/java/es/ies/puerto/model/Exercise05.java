@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class Exercise05 {
 
-    public static final String COMMAND = "ls -ff";
+    public static final String COMMAND = "cat test.txt";
 
     public static void main(String[] args) {
         System.out.println(redirectErrors(COMMAND));

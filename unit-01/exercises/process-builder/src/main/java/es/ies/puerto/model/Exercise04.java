@@ -13,7 +13,7 @@ public class Exercise04 {
     public static final String[] EXEC_INFO = {
             "java",
             "-cp", System.getProperty("java.class.path"),
-            "es.ies.puerto.model.WorkerClass",
+            "es.ies.puerto.model.Exercise04Writer",
             "exercise04.txt"
     };
 

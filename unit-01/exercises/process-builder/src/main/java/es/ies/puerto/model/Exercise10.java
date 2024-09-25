@@ -15,13 +15,17 @@ public class Exercise10 {
     public static final String COMMAND_LINUX = "ls -l";
     public static final String COMMAND_FILTER = "grep \".txt\"";
     public static void main(String[] args) {
-        ProcessBuilder pbProducer = new ProcessBuilder(COMMAND_LINUX.split(" "));
-        ProcessBuilder pbConsumer = new ProcessBuilder(COMMAND_FILTER.split(" "));
+        System.out.println(consumerReadProducer(COMMAND_LINUX, COMMAND_FILTER));
+    }
+
+    public static boolean consumerReadProducer(String commandProducer, String commandConsumer) {
+        ProcessBuilder pbProducer = new ProcessBuilder(commandProducer.split(" "));
+        ProcessBuilder pbConsumer = new ProcessBuilder(commandConsumer.split(" "));
 
         try {
             Process processProducer = pbProducer.start();
-            Process processConsumer = pbConsumer.start();
 
+            Process processConsumer = pbConsumer.start();
 
             InputStream producerInputStream = processProducer.getInputStream();
             OutputStream consumerOutputStream = processConsumer.getOutputStream();
@@ -35,7 +39,6 @@ public class Exercise10 {
                 consumerOutputStream.flush();
             }
 
-
             consumerOutputStream.close();
             producerInputStream.close();
 
@@ -43,11 +46,13 @@ public class Exercise10 {
             int exitCodeProducer = processProducer.waitFor();
             int exitCodeConsumer = processConsumer.waitFor();
 
-            System.out.println("Código de salida del Productor: " + exitCodeProducer);
-            System.out.println("Código de salida del Consumidor: " + exitCodeConsumer);
+            if (exitCodeConsumer == 0 && exitCodeProducer == 0){
+                return true;
+            }
 
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
+        return false;
     }
 }

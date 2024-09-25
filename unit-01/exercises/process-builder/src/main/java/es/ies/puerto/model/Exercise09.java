@@ -13,11 +13,14 @@ import java.io.IOException;
  */
 public class Exercise09 {
     public static final String COMMAND_LINUX = "ping -t google.com";
-    //public static final String COMMAND_WINDOWS= "cmd.exe /c ping -t google.com";
     public static final int MAX_TIME = 10000;
 
     public static void main(String[] args) {
-        ProcessBuilder processBuilder = new ProcessBuilder(COMMAND_LINUX.split(" "));
+        System.out.println(stopProcessAfterTime(MAX_TIME, COMMAND_LINUX));
+    }
+
+    public static boolean stopProcessAfterTime(int timeBeforeStop,String command ){
+        ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
 
         try{
             long startTime = System.currentTimeMillis();
@@ -28,19 +31,22 @@ public class Exercise09 {
             while (isRunning) {
                 long currentTime = System.currentTimeMillis();
 
-                if (currentTime - startTime >= MAX_TIME) {
+                if ((currentTime - startTime) >= timeBeforeStop) {
                     process.destroy();
                     isRunning = false;
-                    System.out.println("Process stopped after " + (MAX_TIME / 1000) + "s");
                 }
             }
 
             int exitCode = process.waitFor();
-            System.out.println("exitCode: " + exitCode);
+
+            if (exitCode == 1){
+                return true;
+            }
 
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+        return false;
     }
 
 }

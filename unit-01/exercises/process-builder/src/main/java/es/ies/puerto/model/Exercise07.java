@@ -3,15 +3,29 @@ package es.ies.puerto.model;
 import java.io.*;
 
 public class Exercise07 {
-    public static final String EXECUTABLE = "java";
-    public static final String CLASS_PRODUCER = "src/main/java/es/ies/puerto/model/DataProducer.java";
-    public static final String CLASS_CONSUMER = "src/main/java/es/ies/puerto/model/DataConsumer.java";
-    public static final String CLASSPATH = "-cp";  // Agrega el parámetro de classpath
-    public static final String CLASSPATH_DIR = "bin";
+
+    public static final String[] EXEC_INFO_CONSUMER = {
+            "java",
+            "-cp",
+            "bin",
+            "src/main/java/es/ies/puerto/model/DataConsumer.java"
+    };
+
+    public static final String[] EXEC_INFO_PRODUCER = {
+            "java",
+            "-cp",
+            "bin",
+            "src/main/java/es/ies/puerto/model/DataProducer.java"
+    };
+
 
     public static void main(String[] args) {
-        ProcessBuilder pbProducer = new ProcessBuilder(EXECUTABLE, CLASSPATH, CLASSPATH_DIR, CLASS_PRODUCER);
-        ProcessBuilder pbConsumer = new ProcessBuilder(EXECUTABLE, CLASSPATH, CLASSPATH_DIR, CLASS_CONSUMER);
+        System.out.println(producerConsumerProcesses(EXEC_INFO_PRODUCER, EXEC_INFO_CONSUMER));
+    }
+
+    public static boolean producerConsumerProcesses(String [] execInfoProducer, String [] execInfoConsumer){
+        ProcessBuilder pbProducer = new ProcessBuilder(execInfoProducer);
+        ProcessBuilder pbConsumer = new ProcessBuilder(execInfoConsumer);
 
         pbProducer.redirectErrorStream(true);
         pbConsumer.redirectErrorStream(true);
@@ -36,11 +50,14 @@ public class Exercise07 {
             int exitCodeProducer = processProducer.waitFor();
             int exitCodeConsumer = processConsumer.waitFor();
 
-            System.out.println("Código de salida del Productor: " + exitCodeProducer);
-            System.out.println("Código de salida del Consumidor: " + exitCodeConsumer);
+            if (exitCodeProducer == 0  && exitCodeConsumer == 0){
+                return true;
+            }
 
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            return false;
         }
+        return false;
     }
+
 }

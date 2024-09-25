@@ -16,7 +16,7 @@ public class Exercise03 {
     public static boolean redirectToFile(String command){
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
 
-        File outputFile = new File("exercise3.txt");
+        File outputFile = new File("exercise03.txt");
 
         processBuilder.redirectOutput(outputFile);
         processBuilder.redirectErrorStream(true);

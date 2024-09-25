@@ -1,6 +1,8 @@
 package es.ies.puerto.model;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Crea un programa que lance 5 instancias de una clase Java llamada WorkerClass. Cada instancia debe realizar
@@ -20,24 +22,29 @@ public class Exercise06 {
 
 
     public static boolean runInstances(int numInstances, String executable, String classPath, String className){
+        List<Integer> result = new ArrayList<>();
         for (int i=1; i <= numInstances; i++) {
             try {
                 ProcessBuilder processBuilder = new ProcessBuilder(executable, "-cp", classPath, className,
                         String.valueOf(i));
-//String.valueOf(i)
+
                 Process process = processBuilder.start();
 
                 int exitCode = process.waitFor();
+                result.add(exitCode);
 
-                if (exitCode == 0){
-                    return true;
-                }
 
             } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
+                return false;
             }
         }
 
-        return false;
+        int counter = 0;
+        for (Integer exitCode : result) {
+            if (exitCode == 0) {
+                counter++;
+            }
+        }
+        return result.size() == counter;
     }
 }
