@@ -30,6 +30,7 @@ public class Exercise07 {
         pbProducer.redirectErrorStream(true);
         pbConsumer.redirectErrorStream(true);
 
+
         try {
             Process processProducer = pbProducer.start();
             Process processConsumer = pbConsumer.start();

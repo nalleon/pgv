@@ -24,23 +24,19 @@ public class Exercise10 {
 
         try {
             Process processProducer = pbProducer.start();
-
             Process processConsumer = pbConsumer.start();
 
-            InputStream producerInputStream = processProducer.getInputStream();
-            OutputStream consumerOutputStream = processConsumer.getOutputStream();
+            try (InputStream producerInputStream = processProducer.getInputStream();
+                 OutputStream consumerOutputStream = processConsumer.getOutputStream()){
+                byte[] tmp = new byte[1024];
+                int bytesRead;
 
-
-            byte[] tmp = new byte[1024];
-            int bytesRead;
-
-            while ((bytesRead = producerInputStream.read(tmp)) != -1) {
-                consumerOutputStream.write(tmp, 0, bytesRead);
-                consumerOutputStream.flush();
+                while ((bytesRead = producerInputStream.read(tmp)) != -1) {
+                    consumerOutputStream.write(tmp, 0, bytesRead);
+                    consumerOutputStream.flush();
+                }
             }
 
-            consumerOutputStream.close();
-            producerInputStream.close();
 
 
             int exitCodeProducer = processProducer.waitFor();

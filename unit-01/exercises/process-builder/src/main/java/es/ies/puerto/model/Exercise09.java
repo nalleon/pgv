@@ -23,8 +23,9 @@ public class Exercise09 {
         ProcessBuilder processBuilder = new ProcessBuilder(command.split(" "));
 
         try{
-            long startTime = System.currentTimeMillis();
             Process process = processBuilder.start();
+            long startTime = System.currentTimeMillis();
+
 
             boolean isRunning = true;
 
