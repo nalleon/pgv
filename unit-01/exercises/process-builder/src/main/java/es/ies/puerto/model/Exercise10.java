@@ -1,6 +1,8 @@
 package es.ies.puerto.model;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Escribe un programa que encadene la salida de un proceso como entrada de otro.
@@ -22,25 +24,38 @@ public class Exercise10 {
         //Process processConsumer = pbConsumer.start();
 
         ProcessBuilder pbProducer = new ProcessBuilder(commandProducer.split(" "));
-        ProcessBuilder pbConsumer = new ProcessBuilder(commandConsumer.split(" "));
+
+        List<String> result = new ArrayList<>();
+        InputStream producerInputStream;
+        int exitCodeProducer;
         try {
             Process processProducer = pbProducer.start();
 
-            InputStream producerInputStream = processProducer.getInputStream();
+            producerInputStream = processProducer.getInputStream();
             BufferedReader lector = new BufferedReader(new InputStreamReader(producerInputStream));
 
-            String linea;
-            System.out.println("Salida del proceso:");
-            while ((linea = lector.readLine()) != null) {
-                System.out.println(linea);
+            String line;
+            while ((line = lector.readLine()) != null) {
+                result.add(line);
             }
 
-            } catch (IOException ex) {
+             exitCodeProducer = processProducer.waitFor();
+
+            } catch (IOException | InterruptedException ex) {
             throw new RuntimeException(ex);
         }
 
+        ProcessBuilder pbConsumer = new ProcessBuilder(commandConsumer.split(" "));
+        try {
+            Process processConsumer = pbConsumer.start();
 
-       /**int exitCodeProducer = processProducer.waitFor();
+
+        }  catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        /**
         Process processConsumer = pbConsumer.start();
 
 
