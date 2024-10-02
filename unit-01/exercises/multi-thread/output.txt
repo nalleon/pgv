@@ -1,0 +1,8 @@
+total 24
+-rw-rw-r-- 1 dam dam   12 sep 23 18:46 exercise04.txt
+-rw-rw-r-- 1 dam dam  169 sep 23 20:08 exercise06.txt
+-rw-rw-r-- 1 dam dam    0 sep 23 20:18 output.txt
+-rw-rw-r-- 1 dam dam 1494 sep 23 18:46 pom.xml
+-rw-rw-r-- 1 dam dam  161 sep 23 18:46 README.md
+drwxr-xr-x 4 dam dam 4096 sep 18 16:48 src
+drwxrwxr-x 4 dam dam 4096 sep 23 18:46 target
