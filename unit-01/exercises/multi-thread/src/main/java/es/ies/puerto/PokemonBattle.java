@@ -64,17 +64,4 @@ public class PokemonBattle implements Runnable {
     }
 
 
-    public static void main(String[] args) {
-        PokemonBattle battleCharmander = new PokemonBattle();
-        battleCharmander.setName("Charmander");
-        PokemonBattle battlePikachu = new PokemonBattle();
-        battlePikachu.setName("Pikachu");
-        Thread charmander = new Thread(battleCharmander);
-        Thread pikachu = new Thread(battlePikachu);
-
-        charmander.start();
-        pikachu.start();
-    }
-
-
 }

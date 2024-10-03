@@ -9,7 +9,7 @@ public class Exercise01 {
 
     public Exercise01() {}
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         PokemonBattle battleCharmander = new PokemonBattle();
         battleCharmander.setName("Charmander");
         PokemonBattle battlePikachu = new PokemonBattle();
