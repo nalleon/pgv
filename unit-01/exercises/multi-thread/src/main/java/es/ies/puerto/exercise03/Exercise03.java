@@ -6,5 +6,21 @@ package es.ies.puerto.exercise03;
  * completamente ensamblados, usando mecanismos de sincronización entre hilos.
  */
 public class Exercise03 {
+    public static void main(String[] args) {
+        DroidFactory droidFactory1 = new DroidFactory();
+        DroidFactory droidFactory2 = new DroidFactory();
+        droidFactory1.setName("assembler");
+        droidFactory2.setName("activator");
 
+        Thread thread1 = new Thread(droidFactory1);
+        Thread thread2 = new Thread(droidFactory2);
+
+        try {
+            thread1.start();
+            thread1.join();
+            thread2.start();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 }
