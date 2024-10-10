@@ -9,7 +9,7 @@ public class Monster {
 
     private int monsterId;
     private String monsterName;
-    private String location;
+    private String position;
     private boolean captured;
 
     /**
@@ -29,13 +29,13 @@ public class Monster {
      * Constructor of the class
      * @param monsterId of the monster
      * @param monsterName of the monster
-     * @param location of the monster
+     * @param position of the monster
      * @param captured of the monster
      */
-    public Monster(int monsterId, String monsterName, String location, boolean captured) {
+    public Monster(int monsterId, String monsterName, String position, boolean captured) {
         this.monsterId = monsterId;
         this.monsterName = monsterName;
-        this.location = location;
+        this.position = position;
         this.captured = captured;
     }
 
@@ -59,12 +59,12 @@ public class Monster {
         this.monsterName = monsterName;
     }
 
-    public String getLocation() {
-        return location;
+    public String getPosition() {
+        return position;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     public boolean isCaptured() {
@@ -84,7 +84,7 @@ public class Monster {
         return "Monster{" +
                 "monsterId=" + monsterId +
                 ", monsterName='" + monsterName + '\'' +
-                ", location='" + location + '\'' +
+                ", position='" + position + '\'' +
                 ", captured=" + captured +
                 '}';
     }

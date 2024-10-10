@@ -8,22 +8,50 @@ import java.util.Random;
  */
 public class Hunter extends Thread {
     private String hunterName;
+    private String position;
 
     @Override
     public void run() {
         Random random = new Random();
     }
 
+    /**
+     * Default constructor of the class
+     */
+    public Hunter (){}
 
-    public int movement(int location){
+    /**
+     * Constructor of the clase
+     * @param name of the thread
+     * @param hunterName of the hunter
+     */
+    public Hunter(String name, String hunterName, String position) {
+        super(name);
+        this.hunterName = hunterName;
+        this.position = position;
+    }
 
-        return location;
+    public String getHunterName() {
+        return hunterName;
+    }
+
+    public void setHunterName(String hunterName) {
+        this.hunterName = hunterName;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 
     @Override
     public String toString() {
         return "Hunter{" +
                 "hunterName='" + hunterName + '\'' +
+                ", position='" + position + '\'' +
                 '}';
     }
 
