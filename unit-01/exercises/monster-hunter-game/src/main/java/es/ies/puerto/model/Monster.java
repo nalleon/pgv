@@ -15,7 +15,19 @@ public class Monster {
     /**
      * Default constructor of the class
      */
-    public Monster() {}
+    public Monster() {
+        monsterId = 1;
+        monsterName = "";
+        position = "";
+        captured = false;
+    }
+
+    public Monster(int monsterId, String monsterName) {
+        this.monsterId = monsterId;
+        this.monsterName = monsterName;
+        position = "";
+        captured = false;
+    }
 
     /**
      * Constructor of the class
@@ -23,6 +35,9 @@ public class Monster {
      */
     public Monster(int monsterId) {
         this.monsterId = monsterId;
+        monsterName = "";
+        position = "";
+        captured = false;
     }
 
     /**

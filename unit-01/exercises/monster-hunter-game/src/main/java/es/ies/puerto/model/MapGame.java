@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * @author Nabil L. A.
@@ -12,11 +13,14 @@ public class MapGame {
     /**
      * Properties
      */
-    int size;
-    ConcurrentHashMap<String, String> locations;
+    private int size;
+    private ConcurrentHashMap<String, String> locations;
 
-    public static final int DEFAULT_SIZE = 10;
-    char [][] map;
+    private static final int DEFAULT_SIZE = 10;
+    private char [][] map;
+
+    private List<Monster> monsters;
+    private List<Hunter> hunters;
 
 
     /**
@@ -26,6 +30,8 @@ public class MapGame {
         locations = new ConcurrentHashMap<>();
         size = DEFAULT_SIZE;
         map = new char[size][size];
+        monsters = new CopyOnWriteArrayList<>();
+        hunters = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -36,6 +42,8 @@ public class MapGame {
         this.size = size;
         locations = new ConcurrentHashMap<>();
         map = new char[size][size];
+        monsters = new CopyOnWriteArrayList<>();
+        hunters = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -47,6 +55,8 @@ public class MapGame {
         this.size = size;
         this.locations = locations;
         map = new char[size][size];
+        monsters = new CopyOnWriteArrayList<>();
+        hunters = new CopyOnWriteArrayList<>();
     }
 
     /**
@@ -55,40 +65,123 @@ public class MapGame {
      */
     public String generateLocations(){
         Random random = new Random();
-        int y = random.nextInt(0, size);
-        int x = random.nextInt(0, size);
+        int y = random.nextInt(size);
+        int x = random.nextInt( size);
         return x + "," + y;
-    }
-
-    public boolean moveHunter(Hunter hunter, String movement){
-        hunter.setPosition(movement);
-        char [] aux = hunter.getPosition().toCharArray();
-
-        return true;
-    }
-
-    public boolean addMonster(Monster monster, String movement){
-        monster.setPosition(movement);
-        String [] auxPosition = movement.split(",");
-        //map[Integer.parseInt(auxPosition[0])]
-        return true;
-    }
-
-
-    public boolean removeMonster(Monster monster, String location){
-        locations.remove(monster.getMonsterName(), location);
-        return true;
-    }
-
-    public boolean catchMonster(){
-        return true;
     }
 
     public String movement (){
         Random random = new Random();
-        int newPositionX = random.nextInt(0, size/2);
-        int newPositionY = random.nextInt(0, size/2);
+        int newPositionX = random.nextInt( size-1);
+        int newPositionY = random.nextInt( size-1);
         return newPositionX +","+ newPositionY;
+    }
+
+    public synchronized void moveHunter(Hunter hunter, String movement){
+        String[] position = hunter.getPosition().split(",");
+        map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = ' ';
+
+        hunter.setPosition(movement);
+        locations.replace(hunter.getHunterName(), hunter.getPosition(), movement);
+
+        position = hunter.getPosition().split(",");
+        map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = 'H';
+
+    }
+
+    public synchronized void addHunter(Hunter hunter, String location){
+        if (!positionAlreadyOccupied(location)) {
+            String[] positions = location.split(",");
+            int row = Integer.parseInt(positions[0]);
+            int col = Integer.parseInt(positions[1]);
+
+            map[row][col] = 'H';
+
+            locations.put(hunter.getHunterName(), location);
+
+        }
+    }
+
+    private boolean positionAlreadyOccupied(String position) {
+        String[] positions = position.split(",");
+        int row = Integer.parseInt(positions[0]);
+        int col = Integer.parseInt(positions[1]);
+
+        return map[row][col] != '·';
+    }
+
+
+    public synchronized void addMonster(Monster monster){
+        monsters.add(monster);
+        String[] pos = monster.getPosition().split(",");
+        map[Integer.parseInt(pos[0])][Integer.parseInt(pos[1])] = 'M';
+    }
+
+
+    public synchronized void removeMonster(Monster monster, String location){
+        locations.remove(monster.getMonsterName(), location);
+        monsters.remove(monster);
+    }
+
+    public synchronized void catchMonster(List<Monster> monsters, Hunter hunter) {
+        for (int i = monsters.size() - 1; i >= 0; i--) {
+            Monster monster = monsters.get(i);
+            if (hunter.getPosition().equals(monster.getPosition())) {
+                System.out.println(hunter.getName() + " caught " + monster.getMonsterName());
+                monster.setCaptured(true);
+                removeMonster(monster, monster.getPosition());
+                System.out.println("Remaining monsters: " + monsters.size());
+                return;
+            }
+        }
+    }
+
+    public synchronized boolean allMonstersCaught() {
+        return monsters.isEmpty();
+    }
+
+    /**
+     * Getters/setters
+     */
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public ConcurrentHashMap<String, String> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(ConcurrentHashMap<String, String> locations) {
+        this.locations = locations;
+    }
+
+    public char[][] getMap() {
+        return map;
+    }
+
+    public void setMap(char[][] map) {
+        this.map = map;
+    }
+
+    public List<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(List<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public List<Hunter> getHunters() {
+        return hunters;
+    }
+
+    public void setHunters(List<Hunter> hunters) {
+        this.hunters = hunters;
     }
 
     @Override
@@ -96,19 +189,33 @@ public class MapGame {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MapGame mapGame = (MapGame) o;
-        return size == mapGame.size && Objects.equals(locations, mapGame.locations);
+        return Objects.equals(locations, mapGame.locations);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(size, locations);
+        return Objects.hash(locations);
     }
 
     @Override
-    public String toString() {
-        return "MapGame{" +
-                "size=" + size +
-                ", locations=" + locations +
-                '}';
+    public synchronized String toString() {
+        String message = "";
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                switch (map[i][j]) {
+                    case 'H':
+                        message += "H";
+                        break;
+                    case 'M':
+                        message += "M";
+                        break;
+                    default:
+                        message += "·";
+                        break;
+                }
+            }
+            message += "\n";
+        }
+        return message;
     }
 }
