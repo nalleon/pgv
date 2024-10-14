@@ -11,9 +11,7 @@ public class Hunter extends Thread {
     private String hunterName;
     private String position;
     private MapGame mapGame;
-    private List<Monster> monsters;
-    private static long TIME_TO_CATCH = 15000;
-
+    private static long TIME_TO_CATCH = 20000;
 
 
     /**
@@ -23,52 +21,22 @@ public class Hunter extends Thread {
         hunterName = "";
         position="0,0";
         mapGame = new MapGame();
-        monsters = mapGame.getMonsters();
     }
 
     /**
      * Constructor of the class
      * @param hunterName
      */
-    public Hunter(String hunterName) {
+    public Hunter(String hunterName, MapGame mapGame) {
         this.hunterName = hunterName;
         position = "0,0";
-        mapGame = new MapGame();
-        monsters = mapGame.getMonsters();
-    }
-    /**
-     * Constructor of the clase
-     * @param name of the thread
-     * @param hunterName of the hunter
-     */
-    public Hunter(String name, String hunterName, String position) {
-        super(name);
-        this.hunterName = hunterName;
-        this.position = position;
-        mapGame = new MapGame();
-        monsters = mapGame.getMonsters();
+        this.mapGame = mapGame;
     }
 
-    /**
-     * Constructor of the class
-     * @param name
-     * @param hunterName
-     * @param position
-     * @param mapGame
-     */
-    public Hunter(String name, String hunterName, String position, MapGame mapGame) {
-        super(name);
-        this.hunterName = hunterName;
-        this.position = position;
-        this.mapGame = mapGame;
-        this.monsters = mapGame.getMonsters();
-    }
 
     /**
      * Getters/setters
      */
-
-
     public String getHunterName() {
         return hunterName;
     }
@@ -85,37 +53,46 @@ public class Hunter extends Thread {
         this.position = position;
     }
 
+    public MapGame getMapGame() {
+        return mapGame;
+    }
+
+    public void setMapGame(MapGame mapGame) {
+        this.mapGame = mapGame;
+    }
+
     @Override
     public void run() {
         long initialTime = System.currentTimeMillis();
         long timePassed = 0;
 
         int monsterCaught = 0;
+        boolean isOver = false;
 
-        while (!monsters.isEmpty() && timePassed < TIME_TO_CATCH) {
-            String newPosition = movement();
-            setPosition(newPosition);
-            System.out.println(hunterName + " moved to " + newPosition);
-            System.out.println();
+        mapGame.addHunter(this, this.getPosition());
+
+        while (!isOver && !mapGame.getMonsters().isEmpty() && timePassed < TIME_TO_CATCH) {
+            mapGame.moveHunter(this);
 
             long endTime = System.currentTimeMillis();
             timePassed = (endTime - initialTime);
 
             if (timePassed >= TIME_TO_CATCH){
+                System.out.println("Time is up!");
                 System.out.println(hunterName + " caught " + monsterCaught + " monsters");
-                break;
+                isOver = true;
             }
 
-            for (Monster monster : monsters) {
-                if (monster.getPosition().equals(newPosition) && !monster.isCaptured()) {
+            for (Monster monster : mapGame.getMonsters()) {
+                if (monster.getPosition().equals(this.getPosition()) && !monster.isCaptured()) {
                     monster.setCaptured(true);
+                    System.out.println(this.getHunterName() + " caught " + monster.getMonsterName());
                     mapGame.removeMonster(monster, monster.getPosition());
-                    monsters.remove(monster);
+                    mapGame.getMonsters().remove(monster);
                     monsterCaught++;
                     break;
                 }
             }
-
 
             try {
                 Thread.sleep(1000);
@@ -126,12 +103,7 @@ public class Hunter extends Thread {
     }
 
 
-    public String movement (){
-        Random random = new Random();
-        int newPositionX = random.nextInt(mapGame.getSize()/2);
-        int newPositionY = random.nextInt(mapGame.getSize()/2);
-        return newPositionX +","+ newPositionY;
-    }
+
 
     @Override
     public boolean equals(Object o) {

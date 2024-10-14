@@ -7,6 +7,7 @@ import es.ies.puerto.model.Monster;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class MonsterHunter {
 
@@ -16,10 +17,9 @@ public class MonsterHunter {
 
     public MonsterHunter() {
         mapGame = new MapGame();
-        monsterList = new ArrayList<>();
+        monsterList = new CopyOnWriteArrayList<>();
         hunterList = new ArrayList<>();
     }
-
 
 
     /**
@@ -51,13 +51,15 @@ public class MonsterHunter {
 
 
     public static void main(String[] args) {
-        Hunter hunter1 = new Hunter("Hunter1");
-        Hunter hunter2 = new Hunter("Hunter2");
-
         Monster monster1 = new Monster(1, "Monster1");
         Monster monster2 = new Monster(2, "Monster2");
 
         MapGame mapGame = new MapGame(5);
+        Hunter hunter1 = new Hunter("Hunter1", mapGame);
+        Hunter hunter2 = new Hunter("Hunter2", mapGame);
+
+        hunter1.setMapGame(mapGame);
+        hunter2.setMapGame(mapGame);
 
         List<Monster> monsterList = new ArrayList<>(Arrays.asList(monster1, monster2));
         List<Hunter> hunterList = new ArrayList<>(Arrays.asList(hunter1, hunter2));
@@ -82,29 +84,7 @@ public class MonsterHunter {
         hunter1Thread.start();
         hunter2Thread.start();
 
-        boolean gameGoingOn = true;
 
-        while(gameGoingOn){
-
-            for (Hunter hunter : hunterList) {
-                String newPosition = monsterHunterGame.getMapGame().movement();
-                monsterHunterGame.getMapGame().moveHunter(hunter, newPosition);
-                monsterHunterGame.getMapGame().catchMonster(monsterHunterGame.getMonsterList(), hunter);
-            }
-
-            System.out.println(monsterHunterGame.getMapGame());
-
-            if (monsterHunterGame.getMapGame().getMonsters().isEmpty()) {
-                System.out.println("All monster have been caught. Game is over!");
-                gameGoingOn = false;
-            }
-
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 
     public static void createLocations(MonsterHunter monsterHunter) {
