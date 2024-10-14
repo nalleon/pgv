@@ -50,7 +50,6 @@ public class MonsterHunter {
     }
 
 
-
     public static void main(String[] args) {
         Hunter hunter1 = new Hunter("Hunter1");
         Hunter hunter2 = new Hunter("Hunter2");
@@ -70,7 +69,6 @@ public class MonsterHunter {
 
         createLocations(monsterHunterGame);
 
-
         for (Hunter hunter : hunterList) {
             monsterHunterGame.getMapGame().addHunter(hunter, hunter.getPosition());
         }
@@ -78,16 +76,12 @@ public class MonsterHunter {
             monsterHunterGame.getMapGame().addMonster(monster);
         }
 
-
-
         Thread hunter1Thread = new Thread(hunter1);
         Thread hunter2Thread = new Thread(hunter2);
 
         hunter1Thread.start();
         hunter2Thread.start();
 
-
-        System.out.println("Monsters to catch:" + monsterHunterGame.getMonsterList().size());
         boolean gameGoingOn = true;
 
         while(gameGoingOn){

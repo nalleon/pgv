@@ -90,7 +90,7 @@ public class MapGame {
     }
 
     public synchronized void addHunter(Hunter hunter, String location){
-        if (!positionAlreadyOccupied(location)) {
+        if (!checkPositionsOverlap(location)) {
             String[] positions = location.split(",");
             int row = Integer.parseInt(positions[0]);
             int col = Integer.parseInt(positions[1]);
@@ -102,19 +102,21 @@ public class MapGame {
         }
     }
 
-    private boolean positionAlreadyOccupied(String position) {
-        String[] positions = position.split(",");
-        int row = Integer.parseInt(positions[0]);
-        int col = Integer.parseInt(positions[1]);
-
-        return map[row][col] != '·';
+    public boolean checkPositionsOverlap(String position){
+        return locations.containsValue(position);
     }
 
 
     public synchronized void addMonster(Monster monster){
-        monsters.add(monster);
-        String[] pos = monster.getPosition().split(",");
-        map[Integer.parseInt(pos[0])][Integer.parseInt(pos[1])] = 'M';
+        if (!checkPositionsOverlap(monster.getPosition())) {
+            monsters.add(monster);
+            String[] positions = monster.getPosition().split(",");
+            int row = Integer.parseInt(positions[0]);
+            int col = Integer.parseInt(positions[1]);
+            map[row][col] = 'M';
+
+            locations.put(monster.getMonsterName(), monster.getPosition());
+        }
     }
 
 
@@ -127,17 +129,15 @@ public class MapGame {
         for (int i = monsters.size() - 1; i >= 0; i--) {
             Monster monster = monsters.get(i);
             if (hunter.getPosition().equals(monster.getPosition())) {
-                System.out.println(hunter.getName() + " caught " + monster.getMonsterName());
+                System.out.println(hunter.getName() + " caught " + monster.getMonsterName() + " at "
+                        + monster.getPosition());
                 monster.setCaptured(true);
                 removeMonster(monster, monster.getPosition());
-                System.out.println("Remaining monsters: " + monsters.size());
+                monsters.remove(i);
+                System.out.println("Remaining monsters: " + getMonsters().size());
                 return;
             }
         }
-    }
-
-    public synchronized boolean allMonstersCaught() {
-        return monsters.isEmpty();
     }
 
     /**

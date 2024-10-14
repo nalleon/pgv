@@ -12,7 +12,7 @@ public class Hunter extends Thread {
     private String position;
     private MapGame mapGame;
     private List<Monster> monsters;
-    private static boolean gameOver = false;
+    private static long TIME_TO_CATCH = 15000;
 
 
 
@@ -87,24 +87,35 @@ public class Hunter extends Thread {
 
     @Override
     public void run() {
-        while (!gameOver && !monsters.isEmpty()) {
+        long initialTime = System.currentTimeMillis();
+        long timePassed = 0;
+
+        int monsterCaught = 0;
+
+        while (!monsters.isEmpty() && timePassed < TIME_TO_CATCH) {
             String newPosition = movement();
             setPosition(newPosition);
             System.out.println(hunterName + " moved to " + newPosition);
             System.out.println();
 
-            synchronized (monsters) {
-                for (Monster monster : monsters) {
-                    if (monster.getPosition().equals(newPosition) && !monster.isCaptured()) {
-                        monster.setCaptured(true);
-                        System.out.println(hunterName + " caught " + monster.getMonsterName()
-                                + " at: " + newPosition);
-                        mapGame.removeMonster(monster, monster.getPosition());
-                        monsters.remove(monster);
-                        break;
-                    }
+            long endTime = System.currentTimeMillis();
+            timePassed = (endTime - initialTime);
+
+            if (timePassed >= TIME_TO_CATCH){
+                System.out.println(hunterName + " caught " + monsterCaught + " monsters");
+                break;
+            }
+
+            for (Monster monster : monsters) {
+                if (monster.getPosition().equals(newPosition) && !monster.isCaptured()) {
+                    monster.setCaptured(true);
+                    mapGame.removeMonster(monster, monster.getPosition());
+                    monsters.remove(monster);
+                    monsterCaught++;
+                    break;
                 }
             }
+
 
             try {
                 Thread.sleep(1000);
@@ -117,13 +128,9 @@ public class Hunter extends Thread {
 
     public String movement (){
         Random random = new Random();
-        int newPositionX = random.nextInt(mapGame.getSize());
-        int newPositionY = random.nextInt(mapGame.getSize());
+        int newPositionX = random.nextInt(mapGame.getSize()/2);
+        int newPositionY = random.nextInt(mapGame.getSize()/2);
         return newPositionX +","+ newPositionY;
-    }
-
-    public static void endGame() {
-        gameOver = true;
     }
 
     @Override
