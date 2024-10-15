@@ -67,27 +67,27 @@ public class MapGame {
         int y = random.nextInt(size);
         int x = random.nextInt(size);
 
-        if (map[x][y].equals(".")){
-            map[x][y] = "H";
+        if (map[x][y].equals(" . ")){
+            map[x][y] = " H ";
             String[] position = hunter.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = ".";
+            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
             hunter.setPosition(x + ","+ y);
             showMap();
             return;
         }
 
-        if (map[x][y].equals("M")){
+        if (map[x][y].equals(" M ")){
             catchMonster(monsters, hunter);
-            map[x][y] = "H";
+            map[x][y] = " H ";
 
             String[] position = hunter.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = ".";
+            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
             hunter.setPosition(x + ","+ y);
             showMap();
             return;
         }
 
-        if (map[x][y].equals("H")){
+        if (map[x][y].equals(" H ")){
             moveHunter(hunter);
         }
 
@@ -96,7 +96,7 @@ public class MapGame {
     private void generateMap() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                this.map[i][j] = ".";
+                this.map[i][j] = " . ";
             }
         }
     }
@@ -117,7 +117,7 @@ public class MapGame {
             int row = Integer.parseInt(positions[0]);
             int col = Integer.parseInt(positions[1]);
 
-            map[row][col] = "H";
+            map[row][col] = " H ";
 
             locations.put(hunter.getHunterName(), location);
         }
@@ -134,7 +134,7 @@ public class MapGame {
             String[] positions = monster.getPosition().split(",");
             int row = Integer.parseInt(positions[0]);
             int col = Integer.parseInt(positions[1]);
-            map[row][col] = "M";
+            map[row][col] = " M ";
 
             locations.put(monster.getMonsterName(), monster.getPosition());
         }

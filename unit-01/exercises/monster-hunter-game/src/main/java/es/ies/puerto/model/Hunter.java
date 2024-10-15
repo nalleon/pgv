@@ -83,6 +83,7 @@ public class Hunter extends Thread {
                 isOver = true;
             }
 
+
             for (Monster monster : mapGame.getMonsters()) {
                 if (monster.getPosition().equals(this.getPosition()) && !monster.isCaptured()) {
                     monster.setCaptured(true);
@@ -93,6 +94,15 @@ public class Hunter extends Thread {
                     break;
                 }
             }
+
+            for (Monster monster : mapGame.getMonsters()) {
+                if (!monster.isCaptured() && timePassed >= 10000 && timePassed < TIME_TO_CATCH) {
+                    mapGame.removeMonster(monster, monster.getPosition());
+                    System.out.println(monster.getMonsterName() + " has fled the field!");
+                }
+            }
+
+
 
             try {
                 Thread.sleep(1000);
