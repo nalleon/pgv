@@ -22,6 +22,7 @@ public class MapGame {
     private List<Monster> monsters;
     private List<Hunter> hunters;
 
+    private String typeTraps = "mine";
 
     /**
      * Default constructor of the class
@@ -46,6 +47,7 @@ public class MapGame {
         monsters = new CopyOnWriteArrayList<>();
         hunters = new CopyOnWriteArrayList<>();
         generateMap();
+        addEvents(size/2);
     }
 
 
@@ -78,34 +80,61 @@ public class MapGame {
         System.out.println(" ");
     }
 
+
+    public synchronized void addEvents(int eventsToAdd){
+        Random random = new Random();
+        int eventsAdded = 0;
+
+        while (eventsAdded < eventsToAdd){
+            int x = random.nextInt(size);
+            int y = random.nextInt(size);
+            String position = x+","+y;
+            if (checkPositionsOverlap(position)) {
+                map[x][y] = " x ";
+                eventsAdded++;
+            }
+
+        }
+
+    }
+
     public synchronized void moveHunter(Hunter hunter){
         Random random = new Random();
         int y = random.nextInt(size);
         int x = random.nextInt(size);
 
-        if (map[x][y].equals(" . ")){
-            map[x][y] = " H ";
-            String[] position = hunter.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
-            hunter.setPosition(x + ","+ y);
-            showMap();
-            return;
-        }
+        String[] position = hunter.getPosition().split(",");
 
-        if (map[x][y].equals(" M ")){
-            String[] position = hunter.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
-            hunter.setPosition(x + ","+ y);
-            catchMonster(monsters, hunter);
-            map[x][y] = " H ";
+        switch (map[x][y]){
+            case " . ":
+                map[x][y] = " H ";
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+                hunter.setPosition(x + ","+ y);
+                showMap();
+                break;
+            case " M ":
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+                hunter.setPosition(x + ","+ y);
+                catchMonster(monsters, hunter);
+                map[x][y] = " H ";
+                showMap();
+                break;
+
+            case " x ":
+                hunter.setDefeated(true);
+                locations.remove(hunter.getHunterName(), hunter.getPosition());
+                hunters.remove(hunter);
 
 
-            showMap();
-            return;
-        }
+                System.out.println(hunter.getHunterName() + " has landed on a mine and died");
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+                map[x][y] = " . ";
+                showMap();
+                break;
 
-        if (map[x][y].equals(" H ")){
-            moveHunter(hunter);
+            default:
+                moveHunter(hunter);
+                break;
         }
 
     }
@@ -115,31 +144,37 @@ public class MapGame {
         int y = random.nextInt(size);
         int x = random.nextInt(size);
 
+        String[] position = monster.getPosition().split(",");
+        switch (map[x][y]){
+            case " . ":
+                map[x][y] = " M ";
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+                monster.setPosition(x + ","+ y);
+                showMap();
+            break;
+            case " H ":
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+                monster.setPosition(x + ","+ y);
+                fightHunter(hunters, monster);
+                map[x][y] = " M ";
+                showMap();
+                break;
+            case " x ":
+                monster.setCaptured(true);
+                locations.remove(monster.getMonsterName(), monster.getPosition());
+                monsters.remove(monster);
 
-        if (map[x][y].equals(" . ")){
-            map[x][y] = " M ";
-            String[] position = monster.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
-            monster.setPosition(x + ","+ y);
-            showMap();
-            return;
+                System.out.println(monster.getMonsterName() + " has landed on a mine and died");
+                map[x][y] = " . ";
+                map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
+
+                showMap();
+                break;
+
+            default:
+                moveMonster(monster);
+                break;
         }
-
-        if (map[x][y].equals(" H ")){
-            String[] position = monster.getPosition().split(",");
-            map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
-            monster.setPosition(x + ","+ y);
-            fightHunter(hunters, monster);
-
-            map[x][y] = " M ";
-            showMap();
-            return;
-        }
-
-        if (map[x][y].equals(" M ")){
-            moveMonster(monster);
-        }
-
     }
 
     public boolean checkPositionsOverlap(String position){
@@ -170,6 +205,7 @@ public class MapGame {
     }
 
 
+
     public synchronized void removeMonsterFromMap(Hunter hunter, Monster monster){
         String[] positions = monster.getPosition().split(",");
         int row = Integer.parseInt(positions[0]);
@@ -185,8 +221,6 @@ public class MapGame {
         monsters.remove(monster);
         locations.put(hunter.getHunterName(), hunter.getPosition());
     }
-
-
 
     public synchronized void monsterFleeFromMap(Monster monster){
         String[] positions = monster.getPosition().split(",");
@@ -226,7 +260,7 @@ public class MapGame {
 
             if (hunter.getPosition().equals(monster.getPosition())) {
                 if (random.nextInt(10)+1 < 7 ) {
-                    System.out.println(hunter.getName() + " caught " + monster.getMonsterName() + " at "
+                    System.out.println(hunter.getHunterName() + " caught " + monster.getMonsterName() + " at "
                             + monster.getPosition());
                     monster.setCaptured(true);
                     int monstersCounter = hunter.getMonsterCaught();
@@ -235,7 +269,7 @@ public class MapGame {
                     System.out.println("Remaining monsters: " + getMonsters().size());
                     return true;
                 } else {
-                    System.out.println(hunter.getHunterName() + "failed to catch " + monster.getMonsterName());
+                    System.out.println(hunter.getHunterName() + " failed to catch " + monster.getMonsterName());
                     moveHunter(hunter);
                 }
             }
@@ -254,7 +288,7 @@ public class MapGame {
             Hunter hunter = hunters.get(i);
             if (hunter.getPosition().equals(monster.getPosition())) {
                 if (random.nextInt(10)+1 < 7 ) {
-                    System.out.println(monster.getName() + " encountered " + hunter.getHunterName() + " at "
+                    System.out.println(monster.getMonsterName() + " defeated " + hunter.getHunterName() + " at "
                             + monster.getPosition());
                     hunter.setDefeated(true);
                     int huntersCounter = monster.getHuntersDefeated();
@@ -262,12 +296,14 @@ public class MapGame {
                     removeHunterFromMap(hunter, monster);
                     System.out.println("Remaining hunters: " + getHunters().size());
                 } else {
-                    System.out.println(monster.getMonsterName() + "failed to defeat " + hunter.getHunterName());
+                    System.out.println(monster.getMonsterName() + " failed to defeat " + hunter.getHunterName());
                     moveMonster(monster);
                 }
             }
         }
     }
+
+
 
     /**
      * Getters/setters
@@ -313,6 +349,14 @@ public class MapGame {
         this.hunters = hunters;
     }
 
+    public String getTypeTraps() {
+        return typeTraps;
+    }
+
+    public void setTypeTraps(String typeTraps) {
+        this.typeTraps = typeTraps;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -337,6 +381,9 @@ public class MapGame {
                         break;
                     case "M":
                         message += " M ";
+                        break;
+                    case "X":
+                        message += " X ";
                         break;
                     default:
                         message += " . ";

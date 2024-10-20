@@ -68,9 +68,8 @@ public class Monster extends Thread {
         long timePassed = 0;
 
         mapGame.addMonster(this, this.getPosition());
-        boolean isOver = false;
 
-        while (!isOver && !mapGame.getHunters().isEmpty() && timePassed < TIME_TO_ESCAPE) {
+        while (!isCaptured() && !mapGame.getHunters().isEmpty() && timePassed < TIME_TO_ESCAPE) {
             long endTime = System.currentTimeMillis();
             timePassed = (endTime - initialTime);
 
@@ -91,8 +90,6 @@ public class Monster extends Thread {
                         System.out.println(this.getMonsterName() + " has fled the field!");
                     }
                 }
-
-
 
             try {
                 Thread.sleep(3000);

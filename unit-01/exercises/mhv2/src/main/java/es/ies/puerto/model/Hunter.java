@@ -85,9 +85,8 @@ public class Hunter extends Thread {
         long timePassed = 0;
 
         mapGame.addHunter(this, this.getPosition());
-        boolean isOver = false;
 
-        while (!isOver && !mapGame.getMonsters().isEmpty() && timePassed < TIME_TO_CATCH) {
+        while (!isDefeated() && !mapGame.getMonsters().isEmpty() && timePassed < TIME_TO_CATCH) {
             long endTime = System.currentTimeMillis();
             timePassed = (endTime - initialTime);
 
