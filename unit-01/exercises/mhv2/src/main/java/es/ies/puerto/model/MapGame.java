@@ -46,7 +46,6 @@ public class MapGame {
         monsters = new CopyOnWriteArrayList<>();
         hunters = new CopyOnWriteArrayList<>();
         generateMap();
-
     }
 
 
@@ -220,18 +219,25 @@ public class MapGame {
             return false;
         }
 
+        Random random = new Random();
+
         for (int i = monsters.size() - 1; i >= 0; i--) {
             Monster monster = monsters.get(i);
 
             if (hunter.getPosition().equals(monster.getPosition())) {
-                System.out.println(hunter.getName() + " caught " + monster.getMonsterName() + " at "
-                        + monster.getPosition());
-                monster.setCaptured(true);
-                int monstersCounter = hunter.getMonsterCaught();
-                hunter.setMonsterCaught(monstersCounter+1);
-                removeMonsterFromMap(hunter, monster);
-                System.out.println("Remaining monsters: " + getMonsters().size());
-                return true;
+                if (random.nextInt(10)+1 < 7 ) {
+                    System.out.println(hunter.getName() + " caught " + monster.getMonsterName() + " at "
+                            + monster.getPosition());
+                    monster.setCaptured(true);
+                    int monstersCounter = hunter.getMonsterCaught();
+                    hunter.setMonsterCaught(monstersCounter + 1);
+                    removeMonsterFromMap(hunter, monster);
+                    System.out.println("Remaining monsters: " + getMonsters().size());
+                    return true;
+                } else {
+                    System.out.println(hunter.getHunterName() + "failed to catch " + monster.getMonsterName());
+                    moveHunter(hunter);
+                }
             }
         }
         return false;
@@ -242,17 +248,23 @@ public class MapGame {
             return;
         }
 
+        Random random = new Random();
+
         for (int i = hunters.size() - 1; i >= 0; i--) {
             Hunter hunter = hunters.get(i);
             if (hunter.getPosition().equals(monster.getPosition())) {
-                System.out.println(monster.getName() + " encountered " + hunter.getHunterName() + " at "
-                        + monster.getPosition());
-                hunter.setDefeated(true);
-                int huntersCounter = monster.getHuntersDefeated();
-                monster.setHuntersDefeated(huntersCounter+1);
-                removeHunterFromMap(hunter, monster);
-                System.out.println("Remaining hunters: " + getHunters().size());
-                return;
+                if (random.nextInt(10)+1 < 7 ) {
+                    System.out.println(monster.getName() + " encountered " + hunter.getHunterName() + " at "
+                            + monster.getPosition());
+                    hunter.setDefeated(true);
+                    int huntersCounter = monster.getHuntersDefeated();
+                    monster.setHuntersDefeated(huntersCounter + 1);
+                    removeHunterFromMap(hunter, monster);
+                    System.out.println("Remaining hunters: " + getHunters().size());
+                } else {
+                    System.out.println(monster.getMonsterName() + "failed to defeat " + hunter.getHunterName());
+                    moveMonster(monster);
+                }
             }
         }
     }

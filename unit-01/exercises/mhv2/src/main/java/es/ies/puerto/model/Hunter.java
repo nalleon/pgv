@@ -83,8 +83,6 @@ public class Hunter extends Thread {
     public void run() {
         long initialTime = System.currentTimeMillis();
         long timePassed = 0;
-        int monsterCaught = 0;
-
 
         mapGame.addHunter(this, this.getPosition());
         boolean isOver = false;

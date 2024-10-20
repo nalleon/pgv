@@ -83,6 +83,14 @@ public class MonsterHunter {
         Thread monster1Thread = new Thread(monster1);
         Thread monster2Thread = new Thread(monster2);
 
+        hunter1Thread.setName("Hunter1");
+
+        hunter2Thread.setName("Hunter2");
+
+        monster1Thread.setName("Monster1");
+
+        monster2Thread.setName("Monster2");
+
         hunter1Thread.start();
         hunter2Thread.start();
         monster1Thread.start();

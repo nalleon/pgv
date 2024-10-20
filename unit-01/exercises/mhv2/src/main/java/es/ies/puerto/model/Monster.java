@@ -67,9 +67,6 @@ public class Monster extends Thread {
         long initialTime = System.currentTimeMillis();
         long timePassed = 0;
 
-        int huntersDefeated = 0;
-
-
         mapGame.addMonster(this, this.getPosition());
         boolean isOver = false;
 
