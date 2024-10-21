@@ -61,6 +61,11 @@ public class MonsterHunter {
         hunter1.setMapGame(mapGame);
         hunter2.setMapGame(mapGame);
 
+        hunter1.setPosition(mapGame.generateLocations());
+        hunter2.setPosition(mapGame.generateLocations());
+        monster1.setPosition(mapGame.generateLocations());
+        monster2.setPosition(mapGame.generateLocations());
+
         List<Monster> monsterList = new ArrayList<>(Arrays.asList(monster1, monster2));
         List<Hunter> hunterList = new ArrayList<>(Arrays.asList(hunter1, hunter2));
 
@@ -69,8 +74,6 @@ public class MonsterHunter {
         monsterHunterGame.setHunterList(hunterList);
         monsterHunterGame.setMonsterList(monsterList);
 
-        createLocations(monsterHunterGame);
-
         for (Hunter hunter : hunterList) {
             monsterHunterGame.getMapGame().addHunter(hunter, hunter.getPosition());
         }
@@ -78,11 +81,13 @@ public class MonsterHunter {
             monsterHunterGame.getMapGame().addMonster(monster, monster.getPosition());
         }
 
+        mapGame.addEvents(mapGame.getTypeTraps(), mapGame.getSize()/2);
+
+
         Thread hunter1Thread = new Thread(hunter1);
         Thread hunter2Thread = new Thread(hunter2);
         Thread monster1Thread = new Thread(monster1);
         Thread monster2Thread = new Thread(monster2);
-
 
         hunter1Thread.start();
         hunter2Thread.start();
@@ -91,36 +96,4 @@ public class MonsterHunter {
 
     }
 
-    public static void createLocations(MonsterHunter monsterHunter) {
-        for (Hunter hunter : monsterHunter.getHunterList()) {
-            String location;
-            do {
-                location = monsterHunter.getMapGame().generateLocations();
-            } while (checkPositionsOverlap(location, monsterHunter.getHunterList(), monsterHunter.getMonsterList()));
-            hunter.setPosition(location);
-        }
-
-        for (Monster monster : monsterHunter.getMonsterList()) {
-            String location;
-            do {
-                location = monsterHunter.getMapGame().generateLocations();
-            } while (checkPositionsOverlap(location, monsterHunter.getHunterList(), monsterHunter.getMonsterList()));
-            monster.setPosition(location);
-        }
-
-    }
-
-    public static boolean checkPositionsOverlap(String position, List<Hunter> hunters, List<Monster> monsters){
-        for (Hunter hunter : hunters) {
-            if (hunter.getPosition() != null && hunter.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        for (Monster monster : monsters) {
-            if (monster.getPosition() != null && monster.getPosition().equals(position)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }
