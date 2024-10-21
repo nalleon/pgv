@@ -26,7 +26,6 @@ public class Hunter extends Thread {
         position="0,0";
         mapGame = new MapGame();
         failedPositons = new ArrayList<>();
-        cave = new Cave();
     }
 
     /**
@@ -38,7 +37,6 @@ public class Hunter extends Thread {
         this.position = "0,0";
         this.mapGame = mapGame;
         this.failedPositons = new ArrayList<>();
-        this.cave = new Cave();
     }
 
 
@@ -124,6 +122,7 @@ public class Hunter extends Thread {
             mapGame.moveHunter(this);
 
             if (mapGame.nearCave(this)){
+                System.out.println("test");
                 try {
                     Thread.sleep(4000);
                 } catch (InterruptedException e) {

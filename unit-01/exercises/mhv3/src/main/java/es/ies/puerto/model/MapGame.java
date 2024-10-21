@@ -167,10 +167,11 @@ public class MapGame {
                 break;
 
             case " x ":
+                hunter.setPosition(x + ","+ y);
                 hunter.setDefeated(true);
                 locations.remove(hunter.getHunterName(), hunter.getPosition());
                 hunters.remove(hunter);
-
+                locations.remove(typeTraps, hunter.getPosition());
                 System.out.println(hunter.getHunterName() + " has landed on a mine and died");
                 map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
                 map[x][y] = " . ";
@@ -368,36 +369,33 @@ public class MapGame {
         int x = Integer.parseInt(positions[0]);
         int y = Integer.parseInt(positions[1]);
 
-        if (hunter.getCave().occupied){
-            String[] positionCave = hunter.getCave().getPosition().split(",");
+        Cave cave = hunter.getCave();
 
+        if (cave.isOccupied()){
+            String[] positionCave = cave.getPosition().split(",");
             int caveX = Integer.parseInt(positionCave[0]);
             int caveY = Integer.parseInt(positionCave[1]);
 
             int differenceX = Math.abs(x-caveX);
             int differenceY = Math.abs(y-caveY);
 
-            int newPosX = 0;
-            int newPosY = 0;
+            if (differenceX <= 2 && differenceY <= 2) {
+                int newPosX = 0;
+                int newPosY = 0;
 
+                do {
+                    newPosX = caveX + (int) (Math.random() * 3) - 1;
+                    newPosY = caveY + (int) (Math.random() * 3) - 1;
+                } while (checkPositionsOverlap(newPosX + "," + newPosY) || (newPosX == x && newPosY == y));
 
-            do {
-                for (int i =1; i<=2; i++){
-                    if (differenceX < 2){
-                        newPosX = caveX-i;
-                    }
+                map[newPosX][newPosY] = " H ";
+                map[x][y] = " . ";
+                hunter.setPosition(newPosX + "," + newPosY);
 
-                    if (differenceY < 2) {
-                        newPosY = caveY-i;
-                    }
-                }
-
-            } while (!checkPositionsOverlap(newPosX+","+newPosY));
-
-            hunter.setPosition(newPosX+","+newPosY);
-
-            System.out.println( hunter.getHunterName() + " patrolling the cave at " + caveX+","+caveY);
-            return true;
+                locations.put(hunter.getHunterName(), hunter.getPosition());
+                System.out.println(hunter.getHunterName() + "("+newPosX +"," + newPosY+") patrolling near the cave at " + caveX + "," + caveY);
+                return true;
+            }
         }
 
         return false;
@@ -490,8 +488,11 @@ public class MapGame {
                     case "M":
                         message += " M ";
                         break;
-                    case "X":
-                        message += " X ";
+                    case "x":
+                        message += " x ";
+                        break;
+                    case "c":
+                        message += " c ";
                         break;
                     default:
                         message += " . ";

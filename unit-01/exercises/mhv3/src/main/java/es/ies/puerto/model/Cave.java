@@ -22,7 +22,7 @@ public class Cave {
         this.occupied = false;
     }
 
-    public void enterCave(Monster monster, MapGame mapGame) throws InterruptedException {
+    public synchronized void enterCave(Monster monster, MapGame mapGame) throws InterruptedException {
         semaphore.acquire();
         mapGame.addMonsterToCave(monster);
         String[] position = monster.getPosition().split(",");
@@ -33,7 +33,7 @@ public class Cave {
         System.out.println(monster.getMonsterName() + " has entered the cave.");
     }
 
-    public void exitCave(Monster monster, MapGame mapGame) {
+    public synchronized void exitCave(Monster monster, MapGame mapGame) {
         semaphore.release();
         mapGame.removeMonsterFromCave(monster);
         String[] position = monster.getPosition().split(",");

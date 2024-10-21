@@ -54,15 +54,16 @@ public class MonsterHunter {
     public static void main(String[] args) throws InterruptedException {
         MapGame mapGame = new MapGame(5);
 
+        int numberOfMonsters = 3;
+        int caveCapacity = numberOfMonsters / 2;
+        Cave cave = new Cave(caveCapacity, mapGame.generateLocations());
+
         Hunter hunter1 = new Hunter("Hunter1", mapGame);
         Hunter hunter2 = new Hunter("Hunter2", mapGame);
         Monster monster1 = new Monster(1, "Monster1", mapGame);
         Monster monster2 = new Monster(2, "Monster2", mapGame);
         Monster monster3 = new Monster(3, "Monster3", mapGame);
 
-        int numberOfMonsters = 3;
-        int caveCapacity = numberOfMonsters / 2;
-        Cave cave = new Cave(caveCapacity, mapGame.generateLocations());
 
         hunter1.setMapGame(mapGame);
         hunter2.setMapGame(mapGame);
@@ -72,11 +73,13 @@ public class MonsterHunter {
         monster1.setPosition(mapGame.generateLocations());
         monster2.setPosition(mapGame.generateLocations());
         monster3.setPosition(mapGame.generateLocations());
+
         monster1.setCave(cave);
         monster2.setCave(cave);
         monster3.setCave(cave);
 
-
+        hunter1.setCave(cave);
+        hunter2.setCave(cave);
 
         List<Monster> monsterList = new ArrayList<>(Arrays.asList(monster1, monster2, monster3));
         List<Hunter> hunterList = new ArrayList<>(Arrays.asList(hunter1, hunter2));
