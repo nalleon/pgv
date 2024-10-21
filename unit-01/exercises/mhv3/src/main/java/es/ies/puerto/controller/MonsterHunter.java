@@ -1,5 +1,6 @@
 package es.ies.puerto.controller;
 
+import es.ies.puerto.model.Cave;
 import es.ies.puerto.model.Hunter;
 import es.ies.puerto.model.MapGame;
 import es.ies.puerto.model.Monster;
@@ -57,16 +58,27 @@ public class MonsterHunter {
         Hunter hunter2 = new Hunter("Hunter2", mapGame);
         Monster monster1 = new Monster(1, "Monster1", mapGame);
         Monster monster2 = new Monster(2, "Monster2", mapGame);
+        Monster monster3 = new Monster(3, "Monster3", mapGame);
+
+        int numberOfMonsters = 3;
+        int caveCapacity = numberOfMonsters / 2;
+        Cave cave = new Cave(caveCapacity, mapGame.generateLocations());
 
         hunter1.setMapGame(mapGame);
         hunter2.setMapGame(mapGame);
-
         hunter1.setPosition(mapGame.generateLocations());
         hunter2.setPosition(mapGame.generateLocations());
+
         monster1.setPosition(mapGame.generateLocations());
         monster2.setPosition(mapGame.generateLocations());
+        monster3.setPosition(mapGame.generateLocations());
+        monster1.setCave(cave);
+        monster2.setCave(cave);
+        monster3.setCave(cave);
 
-        List<Monster> monsterList = new ArrayList<>(Arrays.asList(monster1, monster2));
+
+
+        List<Monster> monsterList = new ArrayList<>(Arrays.asList(monster1, monster2, monster3));
         List<Hunter> hunterList = new ArrayList<>(Arrays.asList(hunter1, hunter2));
 
         MonsterHunter monsterHunterGame = new MonsterHunter();
@@ -82,17 +94,19 @@ public class MonsterHunter {
         }
 
         mapGame.addEvents(mapGame.getTypeTraps(), mapGame.getSize()/2);
-
+        mapGame.addCaves(caveCapacity);
 
         Thread hunter1Thread = new Thread(hunter1);
         Thread hunter2Thread = new Thread(hunter2);
         Thread monster1Thread = new Thread(monster1);
         Thread monster2Thread = new Thread(monster2);
+        Thread monster3Thread = new Thread(monster3);
 
         hunter1Thread.start();
         hunter2Thread.start();
         monster1Thread.start();
         monster2Thread.start();
+        monster3Thread.start();
 
     }
 

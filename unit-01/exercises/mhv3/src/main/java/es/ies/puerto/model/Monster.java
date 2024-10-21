@@ -1,6 +1,7 @@
 package es.ies.puerto.model;
 
 import java.util.Objects;
+import es.ies.puerto.model.Cave;
 
 /**
  * @author Nabil L. A.
@@ -15,6 +16,8 @@ public class Monster extends Thread {
     private static long TIME_TO_ESCAPE = 20000;
     private int huntersDefeated = 0;
 
+    private Cave cave;
+
     /**
      * Default constructor of the class
      */
@@ -24,41 +27,16 @@ public class Monster extends Thread {
         position = "0,0";
         captured = false;
         mapGame = new MapGame();
+        cave = new Cave();
     }
 
     public Monster(int monsterId, String monsterName, MapGame mapGame) {
         this.monsterId = monsterId;
         this.monsterName = monsterName;
-        position = "0,0";
-        captured = false;
+        this.position = "0,0";
+        this.captured = false;
         this.mapGame = mapGame;
-    }
-
-    /**
-     * Constructor of the class
-     *
-     * @param monsterId of the monster
-     */
-    public Monster(int monsterId) {
-        this.monsterId = monsterId;
-        monsterName = "";
-        position = "";
-        captured = false;
-    }
-
-    /**
-     * Constructor of the class
-     *
-     * @param monsterId   of the monster
-     * @param monsterName of the monster
-     * @param position    of the monster
-     * @param captured    of the monster
-     */
-    public Monster(int monsterId, String monsterName, String position, boolean captured) {
-        this.monsterId = monsterId;
-        this.monsterName = monsterName;
-        this.position = position;
-        this.captured = captured;
+        this.cave = new Cave();
     }
 
 
@@ -83,6 +61,20 @@ public class Monster extends Thread {
 
                 mapGame.moveMonster(this);
 
+                if (!cave.isOccupied()){
+                    try {
+                        cave.enterCave(this, mapGame);
+
+                        Thread.sleep(4000);
+
+                        cave.exitCave(this, mapGame);
+
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
+
+
                 if (timePassed >= 10000 && timePassed < TIME_TO_ESCAPE) {
                     if (!this.isCaptured()) {
                         this.setCaptured(true);
@@ -97,7 +89,6 @@ public class Monster extends Thread {
                 System.out.println(this.getMonsterName() + " interrupted");
             }
         }
-        System.out.println();
         System.out.println(this.getMonsterName() + " defeated: " + this.getHuntersDefeated() + " hunters");
     }
 
@@ -153,6 +144,14 @@ public class Monster extends Thread {
 
     public void setHuntersDefeated(int huntersDefeated) {
         this.huntersDefeated = huntersDefeated;
+    }
+
+    public Cave getCave() {
+        return cave;
+    }
+
+    public void setCave(Cave cave) {
+        this.cave = cave;
     }
 
     /**

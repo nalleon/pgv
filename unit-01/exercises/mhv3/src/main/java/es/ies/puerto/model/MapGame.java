@@ -1,8 +1,6 @@
 package es.ies.puerto.model;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -25,6 +23,9 @@ public class MapGame {
     private List<Hunter> hunters;
     private BlockingQueue<String> monstersPositionsQueue;
     private String typeTraps = "mine";
+    private Set<Monster> monstersInCave;
+    private List<Cave> caves;
+
 
     /**
      * Default constructor of the class
@@ -36,6 +37,8 @@ public class MapGame {
         monsters = new CopyOnWriteArrayList<>();
         hunters = new CopyOnWriteArrayList<>();
         monstersPositionsQueue = new LinkedBlockingQueue<>();
+        monstersInCave = ConcurrentHashMap.newKeySet();
+        caves = new ArrayList<>();
         generateMap();
     }
 
@@ -50,6 +53,8 @@ public class MapGame {
         monsters = new CopyOnWriteArrayList<>();
         hunters = new CopyOnWriteArrayList<>();
         monstersPositionsQueue = new LinkedBlockingQueue<>();
+        monstersInCave = ConcurrentHashMap.newKeySet();
+        caves = new ArrayList<>();
         generateMap();
         //addEvents(typeTraps, size/2);
         showMap();
@@ -108,6 +113,22 @@ public class MapGame {
 
     }
 
+    public synchronized void addCaves (int cavesToAdd){
+        int cavesAdded = 0;
+
+        while (cavesToAdd > cavesAdded){
+            String position = generateLocations();
+            String[] splitPos =position.split(",");
+
+            if (checkPositionsOverlap(position)) {
+                map[Integer.parseInt(splitPos[0])][Integer.parseInt(splitPos[1])] = " c ";
+                locations.put("cave", position);
+                cavesAdded++;
+            }
+
+        }
+    }
+
     public synchronized void moveHunter(Hunter hunter){
         Random random = new Random();
         int y;
@@ -121,6 +142,7 @@ public class MapGame {
             x = Integer.parseInt(monsterPositionMap[0]);
             y = Integer.parseInt(monsterPositionMap[1]);
             System.out.println(hunter.getHunterName() + " has been informed about a monster at: " + x + "," + y);
+
         } else {
              y = random.nextInt(size);
              x = random.nextInt(size);
@@ -140,8 +162,8 @@ public class MapGame {
                 if (!catchMonster(monsters, hunter)){
                     hunter.getFailedPositons().add(x+","+y);
                 }
-                map[x][y] = " H ";
 
+                map[x][y] = " H ";
                 showMap();
                 break;
 
@@ -191,10 +213,8 @@ public class MapGame {
                 System.out.println(monster.getMonsterName() + " has landed on a mine and died");
                 map[x][y] = " . ";
                 map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
-
                 showMap();
                 break;
-
             default:
                 moveMonster(monster);
                 break;
@@ -330,6 +350,17 @@ public class MapGame {
         }
     }
 
+    public synchronized void addMonsterToCave(Monster monster) {
+        monstersInCave.add(monster);
+    }
+
+    public synchronized void removeMonsterFromCave(Monster monster) {
+        monstersInCave.remove(monster);
+    }
+
+    public boolean isMonsterInCave(Monster monster) {
+        return monstersInCave.contains(monster);
+    }
 
 
     /**

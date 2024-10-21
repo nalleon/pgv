@@ -13,9 +13,7 @@ public class Hunter extends Thread {
     private String position;
     private MapGame mapGame;
     private static long TIME_TO_CATCH = 20000;
-
     private boolean isDefeated = false;
-
     private int monsterCaught = 0;
 
     private List<String> failedPositons;
