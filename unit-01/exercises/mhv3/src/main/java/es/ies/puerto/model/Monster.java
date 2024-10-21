@@ -15,7 +15,6 @@ public class Monster extends Thread {
     private MapGame mapGame;
     private static long TIME_TO_ESCAPE = 20000;
     private int huntersDefeated = 0;
-
     private Cave cave;
 
     /**

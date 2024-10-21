@@ -15,6 +15,7 @@ public class Hunter extends Thread {
     private static long TIME_TO_CATCH = 20000;
     private boolean isDefeated = false;
     private int monsterCaught = 0;
+    private Cave cave;
 
     private List<String> failedPositons;
     /**
@@ -25,6 +26,7 @@ public class Hunter extends Thread {
         position="0,0";
         mapGame = new MapGame();
         failedPositons = new ArrayList<>();
+        cave = new Cave();
     }
 
     /**
@@ -33,9 +35,10 @@ public class Hunter extends Thread {
      */
     public Hunter(String hunterName, MapGame mapGame) {
         this.hunterName = hunterName;
-        position = "0,0";
+        this.position = "0,0";
         this.mapGame = mapGame;
-        failedPositons = new ArrayList<>();
+        this.failedPositons = new ArrayList<>();
+        this.cave = new Cave();
     }
 
 
@@ -90,6 +93,14 @@ public class Hunter extends Thread {
         this.failedPositons = failedPositons;
     }
 
+    public Cave getCave() {
+        return cave;
+    }
+
+    public void setCave(Cave cave) {
+        this.cave = cave;
+    }
+
     @Override
     public void run() {
         long initialTime = System.currentTimeMillis();
@@ -112,6 +123,14 @@ public class Hunter extends Thread {
 
             mapGame.moveHunter(this);
 
+            if (mapGame.nearCave(this)){
+                try {
+                    Thread.sleep(4000);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -120,6 +139,7 @@ public class Hunter extends Thread {
         }
         System.out.println(this.getHunterName() + " caught: " +  this.getMonsterCaught() + " monsters" );
     }
+
 
 
     @Override

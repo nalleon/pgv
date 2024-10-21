@@ -56,7 +56,6 @@ public class MapGame {
         monstersInCave = ConcurrentHashMap.newKeySet();
         caves = new ArrayList<>();
         generateMap();
-        //addEvents(typeTraps, size/2);
         showMap();
     }
 
@@ -362,6 +361,23 @@ public class MapGame {
         return monstersInCave.contains(monster);
     }
 
+
+    public synchronized boolean nearCave(Hunter hunter){
+        String[] positions = hunter.getPosition().split(",");
+        int x = Integer.parseInt(positions[0]);
+        int y = Integer.parseInt(positions[1]);
+
+        for (int i=0; i<=2; i++){
+            for (int j=0; j<=2; j++){
+                if (hunter.getCave().occupied &&
+                        map[i+x][j+y].equals(" c ")){
+                    System.out.println( hunter.getHunterName() + " camping the cave");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 
     /**
      * Getters/setters
