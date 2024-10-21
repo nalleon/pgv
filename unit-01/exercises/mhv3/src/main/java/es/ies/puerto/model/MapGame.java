@@ -223,6 +223,7 @@ public class MapGame {
     public boolean checkPositionsOverlap(String position){
         return !locations.containsValue(position);
     }
+
     public synchronized void addHunter(Hunter hunter, String location){
         if (checkPositionsOverlap(location)) {
             hunters.add(hunter);
@@ -367,17 +368,42 @@ public class MapGame {
         int x = Integer.parseInt(positions[0]);
         int y = Integer.parseInt(positions[1]);
 
-        for (int i=0; i<=2; i++){
-            for (int j=0; j<=2; j++){
-                if (hunter.getCave().occupied &&
-                        map[i+x][j+y].equals(" c ")){
-                    System.out.println( hunter.getHunterName() + " camping the cave");
-                    return true;
+        if (hunter.getCave().occupied){
+            String[] positionCave = hunter.getCave().getPosition().split(",");
+
+            int caveX = Integer.parseInt(positionCave[0]);
+            int caveY = Integer.parseInt(positionCave[1]);
+
+            int differenceX = Math.abs(x-caveX);
+            int differenceY = Math.abs(y-caveY);
+
+            int newPosX = 0;
+            int newPosY = 0;
+
+
+            do {
+                for (int i =1; i<=2; i++){
+                    if (differenceX < 2){
+                        newPosX = caveX-i;
+                    }
+
+                    if (differenceY < 2) {
+                        newPosY = caveY-i;
+                    }
                 }
-            }
+
+            } while (!checkPositionsOverlap(newPosX+","+newPosY));
+
+            hunter.setPosition(newPosX+","+newPosY);
+
+            System.out.println( hunter.getHunterName() + " patrolling the cave at " + caveX+","+caveY);
+            return true;
         }
+
         return false;
     }
+
+
 
     /**
      * Getters/setters
