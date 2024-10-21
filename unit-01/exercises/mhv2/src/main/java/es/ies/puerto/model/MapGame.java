@@ -92,7 +92,6 @@ public class MapGame {
 
 
     public synchronized void addEvents(String type, int eventsToAdd){
-        Random random = new Random();
         int eventsAdded = 0;
 
         while (eventsAdded < eventsToAdd){
@@ -115,7 +114,7 @@ public class MapGame {
         int x;
 
         String[] position = hunter.getPosition().split(",");
-        
+
         String knownMonsterPosition = monstersPositionsQueue.poll();
         if (knownMonsterPosition != null) {
             String[] monsterPositionMap = knownMonsterPosition.split(",");
@@ -137,8 +136,9 @@ public class MapGame {
             case " M ":
                 map[Integer.parseInt(position[0])][Integer.parseInt(position[1])] = " . ";
                 hunter.setPosition(x + ","+ y);
+
                 if (!catchMonster(monsters, hunter)){
-                    monstersPositionsQueue.offer(x +"," + y);
+                    hunter.getFailedPositons().add(x+","+y);
                 }
                 map[x][y] = " H ";
 
@@ -296,6 +296,7 @@ public class MapGame {
                 } else {
                     System.out.println(hunter.getHunterName() + " failed to catch " + monster.getMonsterName());
                     moveHunter(hunter);
+                    monstersPositionsQueue.offer(monster.getPosition());
                     return false;
                 }
             }

@@ -1,5 +1,6 @@
 package es.ies.puerto.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -16,6 +17,8 @@ public class Hunter extends Thread {
     private boolean isDefeated = false;
 
     private int monsterCaught = 0;
+
+    private List<String> failedPositons;
     /**
      * Default constructor of the class
      */
@@ -23,6 +26,7 @@ public class Hunter extends Thread {
         hunterName = "";
         position="0,0";
         mapGame = new MapGame();
+        failedPositons = new ArrayList<>();
     }
 
     /**
@@ -33,6 +37,7 @@ public class Hunter extends Thread {
         this.hunterName = hunterName;
         position = "0,0";
         this.mapGame = mapGame;
+        failedPositons = new ArrayList<>();
     }
 
 
@@ -77,6 +82,14 @@ public class Hunter extends Thread {
 
     public void setMonsterCaught(int monsterCaught) {
         this.monsterCaught = monsterCaught;
+    }
+
+    public List<String> getFailedPositons() {
+        return failedPositons;
+    }
+
+    public void setFailedPositons(List<String> failedPositons) {
+        this.failedPositons = failedPositons;
     }
 
     @Override
